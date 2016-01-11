@@ -5,7 +5,7 @@ local floyd = require "floyd"
 local tree = rbtree.new()
 
 local node
-local arr = floyd.sample(100000, 1000000)
+local arr = floyd.permgen(100000, 1000000)
 for _, v in ipairs(arr) do
    tree:insert(v)
 end

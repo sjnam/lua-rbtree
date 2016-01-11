@@ -5,17 +5,18 @@
    the "Introduction to Algorithms" by Cormen, Leiserson and Rivest.
 --]]
 
+local tab_insert = table.insert
 
 local RED = 1
 local BLACK = 0
 
 
 local inorder_tree_walk
-function inorder_tree_walk (x, Tnil)
+function inorder_tree_walk (s, x, Tnil)
    if x ~= Tnil then
-      inorder_tree_walk (x.left, Tnil)
-      io.write(x.key, " ")
-      inorder_tree_walk (x.right, Tnil)
+      inorder_tree_walk (s, x.left, Tnil)
+      tab_insert(s, x.key)
+      inorder_tree_walk (s, x.right, Tnil)
    end
 end
 
@@ -258,14 +259,25 @@ function _M.new ()
 end
 
 
-function _M.visit (self)
-   inorder_tree_walk(self.root, self.sentinel)
-   print()
+function _M.tnode (self, key)
+   return rbtree_node(key)
+end
+
+
+function _M.walk (self)
+   local s = {}
+   inorder_tree_walk(s, self.root, self.sentinel)
+   return s
 end
 
 
 function _M.insert (self, key)
-   rb_insert(self, rbtree_node(key))
+   local key = key
+   if type(key) == "number" then
+      key = rbtree_node(key)
+   end
+   
+   rb_insert(self, key)
 end
 
 

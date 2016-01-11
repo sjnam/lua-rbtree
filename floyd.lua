@@ -7,8 +7,6 @@
    Pages 754-757 
 --]]
 
-local bstree = require "bstree"
-
 local pairs = pairs
 local randint = math.random
 local insert = table.insert
@@ -34,31 +32,6 @@ end
 -- module stuffs
 
 local _M = {}
-
-
--- Sampling
-function _M.sample (...)
-   local m, n = _set_args(...)
-   if not m then
-      return nil, n
-   end
-
-   local s = {}
-   local tree = bstree.new()
-   
-   for j = n-m+1, n do
-      local t = randint(j)
-      if not s[t] then
-         s[t]= tree:tnode(t)
-         tree:insert(s[t])
-      else
-         s[j]= tree:tnode(j)
-         tree:insert(s[j])
-      end
-   end
-
-   return tree:walk()
-end
 
 
 -- Floyd's random permutation generator
