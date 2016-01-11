@@ -15,7 +15,7 @@ local insert = table.insert
 
 
 -- set arguments
-local maxn = 1000000000 -- 1000,000,000
+local maxn = 1000000000 -- 1,000,000,000
 
 local function _set_args (m, n)
    if not m then
@@ -73,11 +73,11 @@ local function _rand_permgen (...)
       local t = randint(j)
       if not s[t] then
          -- prefix t to s
-         head = { key = t, next = head } -- ffi_new(lnode_type, t, head)
+         head = { key = t, next = head }
          s[t] = head
       else
          -- insert j in s after t
-         local curr = { key = j, next = s[t].next } -- ffi_new(lnode_type, j, s[t].next)
+         local curr = { key = j, next = s[t].next }
          s[t].next = curr
          s[j] = curr
       end

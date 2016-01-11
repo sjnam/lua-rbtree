@@ -1,3 +1,9 @@
+--[[
+   Copyleft (Ↄ) Soojin Nam
+
+   Binary Search Tree
+--]]
+
 local tab_insert = table.insert
 
 
