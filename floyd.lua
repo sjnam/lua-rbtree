@@ -7,23 +7,11 @@
    Pages 754-757 
 --]]
 
-local ffi = require "ffi"
 local bstree = require "bstree"
 
-local ffi_new = ffi.new
 local pairs = pairs
 local randint = math.random
 local insert = table.insert
-
-ffi.cdef[[
-    typedef struct lnode_s lnode_t;
-    struct lnode_s {
-        uint32_t    value;
-        lnode_t    *next;
-    };
-]]
-local lnode_type = ffi.typeof("lnode_t")
-local NULL = ffi.null
 
 
 -- set arguments
@@ -80,24 +68,24 @@ local function _rand_permgen (...)
       return nil, n
    end
 
-   local s, head = {}, NULL
+   local s, head = {}
    for j = n-m+1, n do
       local t = randint(j)
       if not s[t] then
          -- prefix t to s
-         head = ffi_new(lnode_type, t, head)
+         head = { key = t, next = head } -- ffi_new(lnode_type, t, head)
          s[t] = head
       else
          -- insert j in s after t
-         local curr = ffi_new(lnode_type, j, s[t].next)
+         local curr = { key = j, next = s[t].next } -- ffi_new(lnode_type, j, s[t].next)
          s[t].next = curr
          s[j] = curr
       end
    end
 
    s = {}
-   while head ~= NULL do
-      insert(s, head.value)
+   while head do
+      insert(s, head.key)
       head = head.next
    end
    

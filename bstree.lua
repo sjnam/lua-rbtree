@@ -1,29 +1,14 @@
-local ffi = require "ffi"
-
-local ffi_new = ffi.new
 local tab_insert = table.insert
-
-ffi.cdef[[
-    typedef struct tnode_s tnode_t;
-    struct tnode_s {
-        uint32_t    key;
-        tnode_t    *left;
-        tnode_t    *right;
-        tnode_t    *p;
-    };
-]]
-local tnode_type = ffi.typeof("tnode_t")
-local NULL = ffi.null
 
 
 local function tnode (k)
-   return ffi_new(tnode_type, {key = k})
+   return { key = k }
 end
 
 
 local inorder_tree_walk
 function inorder_tree_walk (s, x)
-   if x ~= NULL then
+   if x then
       inorder_tree_walk (s, x.left)
       tab_insert(s, x.key)
       inorder_tree_walk (s, x.right)
@@ -32,7 +17,7 @@ end
 
 
 local function tree_search (x, k)
-   while x ~= NULL and k ~= x.key do
+   while x and k ~= x.key do
       if k < x.key then
          x = x.left
       else
@@ -44,7 +29,7 @@ end
 
 
 local function tree_minimum (x)
-   while x.left ~= NULL do
+   while x.left do
       x = x.left
    end
    return x
@@ -52,7 +37,7 @@ end
 
 
 local function tree_maximum (x)
-   while x.right ~= NULL do
+   while x.right do
       x = x.right
    end
    return x
@@ -60,11 +45,11 @@ end
 
 
 local function tree_successor (x)
-   if x.right ~= NULL then
+   if x.right then
       return tree_minimum(x.right)
    end
    local y = x.p
-   while y ~= NULL and x == y.right do
+   while y and x == y.right do
       x = y
       y = y.p
    end
@@ -73,8 +58,8 @@ end
 
 
 local function tree_insert (tree, z)
-   local x, y = tree.root, NULL
-   while x ~= NULL do
+   local x, y = tree.root, nil
+   while x do
       y = x
       if z.key < x.key then
          x = x.left
@@ -83,7 +68,7 @@ local function tree_insert (tree, z)
       end
    end
    z.p = y
-   if y == NULL then
+   if not y then
       tree.root = z
    elseif z.key < y.key then
       y.left = z
@@ -94,23 +79,23 @@ end
 
 
 local function transplant (tree, u, v)
-   if u.p == NULL then
+   if not u.p then
       tree.root = v
    elseif u == u.p.left then
       u.p.left = v
    else
       u.p.right = v
    end
-   if v ~= NULL then
+   if v then
       v.p = u.p
    end
 end
 
 
 local function tree_delete (tree, z)
-   if z.left == NULL then
+   if not z.left then
       transplant (tree, z, z.right)
-   elseif z.right == NULL then
+   elseif not z.right then
       transplant (tree, z, z.left)
    else
       y = tree_minimum(z.right)
@@ -132,7 +117,7 @@ local mt = { __index = _M }
 
 
 function _M.new ()
-   return setmetatable({ root = NULL }, mt)
+   return setmetatable({ root = nil }, mt)
 end
 
 
