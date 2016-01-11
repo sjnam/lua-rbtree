@@ -11,25 +11,25 @@ local BLACK = 0
 
 
 local inorder_tree_walk
-function inorder_tree_walk (x, s)
-   if x ~= s then
-      inorder_tree_walk (x.left, s)
+function inorder_tree_walk (x, Tnil)
+   if x ~= Tnil then
+      inorder_tree_walk (x.left, Tnil)
       io.write(x.key, " ")
-      inorder_tree_walk (x.right, s)
+      inorder_tree_walk (x.right, Tnil)
    end
 end
 
 
-local function tree_minimum (x, s)
-   while x.left ~= s do
+local function tree_minimum (x, Tnil)
+   while x.left ~= Tnil do
       x = x.left
    end
    return x
 end
 
 
-local function tree_search (x, k, s)
-   while x ~= s and k ~= x.key do
+local function tree_search (x, k, Tnil)
+   while x ~= Tnil and k ~= x.key do
       if k < x.key then
          x = x.left
       else
@@ -40,17 +40,15 @@ local function tree_search (x, k, s)
 end
 
 
-local function left_rotate(tree, x)
-   local tnil = tree.sentinel
-   
+local function left_rotate(T, x)
    local y = x.right
    x.right = y.left
-   if y.left ~= tnil then
+   if y.left ~= T.sentinel then
       y.left.p = x
    end
    y.p = x.p 
-   if x.p == tnil then
-      tree.root = y
+   if x.p == T.sentinel then
+      T.root = y
    elseif x == x.p.left then
       x.p.left = y
    else
@@ -61,17 +59,15 @@ local function left_rotate(tree, x)
 end
 
 
-local function right_rotate(tree, x)
-   local tnil = tree.sentinel
-   
+local function right_rotate(T, x)
    local y = x.left
    x.left = y.right
-   if y.right ~= tnil then
+   if y.right ~= T.sentinel then
       y.right.p = x
    end
    y.p = x.p
-   if x.p == tnil then
-      tree.root = y
+   if x.p == T.sentinel then
+      T.root = y
    elseif x == x.p.right then
       x.p.right = y
    else
@@ -82,12 +78,10 @@ local function right_rotate(tree, x)
 end
 
 
-local function insert (tree, z)
-   local tnil = tree.sentinel
-
-   local y = tnil
-   local x = tree.root
-   while x ~= tnil do
+local function rb_insert (T, z)
+   local y = T.sentinel
+   local x = T.root
+   while x ~= T.sentinel do
       y = x
       if z.key < x.key then
          x = x.left
@@ -96,15 +90,15 @@ local function insert (tree, z)
       end
    end
    z.p = y
-   if y == tnil then
-      tree.root = z
+   if y == T.sentinel then
+      T.root = z
    elseif z.key < y.key then
       y.left = z
    else
       y.right = z
    end
-   y.left = tnil
-   z.right = tnil
+   z.left = T.sentinel
+   z.right = T.sentinel
    z.color = RED
 
    -- insert-fixup
@@ -112,18 +106,18 @@ local function insert (tree, z)
       if z.p == z.p.p.left then
          y = z.p.p.right
          if y.color == RED then
-            z.p.color = BALCK
+            z.p.color = BLACK
             y.color = BLACK
             z.p.p.color = RED
             z = z.p.p
          else
             if z == z.p.right then
                z = z.p
-               left_rotate(tree, z)
+               left_rotate(T, z)
             end
             z.p.color = BLACK
             z.p.p.color = RED
-            right_rotate(tree, z.p.p)
+            right_rotate(T, z.p.p)
          end
       else
          y = z.p.p.left
@@ -135,22 +129,21 @@ local function insert (tree, z)
          else
             if z == z.p.left then
                z = z.p
-               right_rotate(tree, z)
+               right_rotate(T, z)
             end
             z.p.color = BLACK
             z.p.p.color = RED
-            left_rotate(tree, z.p.p)
+            left_rotate(T, z.p.p)
          end
       end
    end
-   tree.root.color = BLACK
+   T.root.color = BLACK
 end
 
 
-local function transplant (tree, u, v)
-   local tnil = tree.sentinel
-   if u.p == tnil then
-      tree.root = v
+local function rb_transplant (T, u, v)
+   if u.p == T.sentinel then
+      T.root = v
    elseif u == u.p.left then
       u.p.left = v
    else
@@ -160,99 +153,101 @@ local function transplant (tree, u, v)
 end
 
 
-local function delete (tree, z)
+local function rb_delete (T, z)
    local x, w
-   local tnil = tree.sentinel
    local y = z
    local y_original_color = y.color
-   if z.left == tnil then
+   if z.left == T.sentinel then
       x = z.right
-      transplant(tree, z, z.right)
-   elseif z.right == tnil then
+      rb_transplant(T, z, z.right)
+   elseif z.right == T.sentinel then
       x = z.left
-      transplant(tree, z, z.left)
+      rb_transplant(T, z, z.left)
    else
-      y = tree_minimum(z.right, tnil)
+      y = tree_minimum(z.right, T.sentinel)
       y_original_color = y.color
       x = y.right
       if y.p == z then
          x.p = y
       else
-         transplant(tree, y, y.right)
+         rb_transplant(T, y, y.right)
          y.right = z.right
          y.right.p = y
       end
-      transplant(tree, z, y)
+      rb_transplant(T, z, y)
       y.left = z.left
       y.left.p = y
       y.color = z.color
 
-      if y_original_color == BLACK then
-         -- delete-fixup
-         while x ~= tree.root and x.color == BLACK do
-            if x == x.p.left then
+      if y_original_color ~= BLACK then
+         return
+      end
+      
+      -- delete-fixup
+      while x ~= T.root and x.color == BLACK do
+         if x == x.p.left then
+            w = x.p.right
+            if w.color == RED then
+               w.color = BLACK
+               x.p.color = RED
+               left_rotate(T, x.p)
                w = x.p.right
-               if w.color == RED then
-                  w.color = BLACK
-                  x.p.color = RED
-                  left_rotate(tree, x.p)
+            end
+            if w.left.color == BLACK and w.right.color == BLACK then
+               w.color = RED
+               x = x.p
+            else
+               if w.right.color == BLACK then
+                  w.left.color = BLACK
+                  w.color = RED
+                  right_rotate(T, w)
                   w = x.p.right
                end
-               if w.left.color == BLACK and w.right.color == BLACK then
-                  w.color = RED
-                  x = x.p
-               else
-                  if w.right.color == BLACK then
-                     w.left.color = BLACK
-                     w.color = RED
-                     right_rotate(tree, w)
-                     w = x.p.right
-                  end
-                  w.color = x.p.color
-                  x.p.color = BLACK
-                  w.right.color = BLACK
-                  left_rotate(tree, x.p)
-                  x = tree.root
-               end
-            else
+               w.color = x.p.color
+               x.p.color = BLACK
+               w.right.color = BLACK
+               left_rotate(T, x.p)
+               x = T.root
+            end
+         else
+            w = x.p.left
+            if w.color == RED then
+               w.color = BLACK
+               x.p.color = RED
+               right_rotate(T, x.p)
                w = x.p.left
-               if w.color == RED then
-                  w.color = BLACK
-                  x.p.color = RED
-                  right_rotate(tree, x.p)
+            end
+            if w.right.color == BLACK and w.left.color == BLACK then
+               w.color = RED
+               x = x.p
+            else
+               if w.left.color == BLACK then
+                  w.right.color = BLACK
+                  w.color = RED
+                  left_rotate(T, w)
                   w = x.p.left
                end
-               if w.left.color == BLACK and w.right.color == BLACK then
-                  w.color = RED
-                  x = x.p
-               else
-                  if w.left.color == BLACK then
-                     w.right.color = BLACK
-                     w.color = RED
-                     left_rotate(tree, w)
-                     w = x.p.left
-                  end
-                  w.color = x.p.color
-                  x.p.color = BLACK
-                  w.left.color = BLACK
-                  right_rotate(tree, x.p)
-                  x = tree.root
-               end
+               w.color = x.p.color
+               x.p.color = BLACK
+               w.left.color = BLACK
+               right_rotate(T, x.p)
+               x = T.root
             end
          end
-         x.color = BLACK
       end
    end
+   x.color = BLACK
 end
 
 
-local function rbtree_node (key, s)
+local function rbtree_node (key)
+   local s = { color = BLACK }
    return  {
       key = key or 0,
       left = s,
       right = s,
       p = s,
-      color = BLACK
+      color = RED
    }
 end
 
@@ -279,14 +274,14 @@ end
 
 
 function _M.insert (self, key)
-   insert(self, rbtree_node(key, self.sentinel))
+   rb_insert(self, rbtree_node(key))
 end
 
 
 function _M.delete (self, key)
    local z = tree_search (self.root, key, self.sentinel)
    if z ~= self.sentinel then
-      delete(self, z)
+      rb_delete(self, z)
    end
 end
 
