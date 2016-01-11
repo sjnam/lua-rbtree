@@ -1,4 +1,5 @@
 # rbtree
+Implementation fo red-black tree in lua.
 The red-black tree code is based on the algorithm described in
 the "Introduction to Algorithms" by Cormen, Leiserson and Rivest.
 
