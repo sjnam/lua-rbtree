@@ -100,7 +100,6 @@ local function rb_insert (T, z)
    z.left = T.sentinel
    z.right = T.sentinel
    z.color = RED
-
    -- insert-fixup
    while z.p.color == RED do
       if z.p == z.p.p.left then
@@ -178,61 +177,60 @@ local function rb_delete (T, z)
       y.left = z.left
       y.left.p = y
       y.color = z.color
-
-      if y_original_color ~= BLACK then
-         return
-      end
-      
-      -- delete-fixup
-      while x ~= T.root and x.color == BLACK do
-         if x == x.p.left then
+   end
+   
+   if y_original_color ~= BLACK then
+      return
+   end
+   -- delete-fixup
+   while x ~= T.root and x.color == BLACK do
+      if x == x.p.left then
+         w = x.p.right
+         if w.color == RED then
+            w.color = BLACK
+            x.p.color = RED
+            left_rotate(T, x.p)
             w = x.p.right
-            if w.color == RED then
-               w.color = BLACK
-               x.p.color = RED
-               left_rotate(T, x.p)
+         end
+         if w.left.color == BLACK and w.right.color == BLACK then
+            w.color = RED
+            x = x.p
+         else
+            if w.right.color == BLACK then
+               w.left.color = BLACK
+               w.color = RED
+               right_rotate(T, w)
                w = x.p.right
             end
-            if w.left.color == BLACK and w.right.color == BLACK then
-               w.color = RED
-               x = x.p
-            else
-               if w.right.color == BLACK then
-                  w.left.color = BLACK
-                  w.color = RED
-                  right_rotate(T, w)
-                  w = x.p.right
-               end
-               w.color = x.p.color
-               x.p.color = BLACK
-               w.right.color = BLACK
-               left_rotate(T, x.p)
-               x = T.root
-            end
-         else
+            w.color = x.p.color
+            x.p.color = BLACK
+            w.right.color = BLACK
+            left_rotate(T, x.p)
+            x = T.root
+         end
+      else
+         w = x.p.left
+         if w.color == RED then
+            w.color = BLACK
+            x.p.color = RED
+            right_rotate(T, x.p)
             w = x.p.left
-            if w.color == RED then
-               w.color = BLACK
-               x.p.color = RED
-               right_rotate(T, x.p)
+         end
+         if w.right.color == BLACK and w.left.color == BLACK then
+            w.color = RED
+            x = x.p
+         else
+            if w.left.color == BLACK then
+               w.right.color = BLACK
+               w.color = RED
+               left_rotate(T, w)
                w = x.p.left
             end
-            if w.right.color == BLACK and w.left.color == BLACK then
-               w.color = RED
-               x = x.p
-            else
-               if w.left.color == BLACK then
-                  w.right.color = BLACK
-                  w.color = RED
-                  left_rotate(T, w)
-                  w = x.p.left
-               end
-               w.color = x.p.color
-               x.p.color = BLACK
-               w.left.color = BLACK
-               right_rotate(T, x.p)
-               x = T.root
-            end
+            w.color = x.p.color
+            x.p.color = BLACK
+            w.left.color = BLACK
+            right_rotate(T, x.p)
+            x = T.root
          end
       end
    end
@@ -241,13 +239,8 @@ end
 
 
 local function rbtree_node (key)
-   local s = { color = BLACK }
    return  {
-      key = key or 0,
-      left = s,
-      right = s,
-      p = s,
-      color = RED
+      key = key or 0
    }
 end
 
