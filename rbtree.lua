@@ -40,7 +40,7 @@ local function tree_search (x, k, Tnil)
 end
 
 
-local function left_rotate(T, x)
+local function left_rotate (T, x)
    local y = x.right
    x.right = y.left
    if y.left ~= T.sentinel then
@@ -59,7 +59,7 @@ local function left_rotate(T, x)
 end
 
 
-local function right_rotate(T, x)
+local function right_rotate (T, x)
    local y = x.left
    x.left = y.right
    if y.right ~= T.sentinel then
@@ -239,9 +239,7 @@ end
 
 
 local function rbtree_node (key)
-   return  {
-      key = key or 0
-   }
+   return { key = key or 0 }
 end
 
 
