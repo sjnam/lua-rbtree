@@ -5,7 +5,9 @@
    the "Introduction to Algorithms" by Cormen, Leiserson and Rivest.
 --]]
 
-local tab_insert = table.insert
+local type = type
+local setmetatable = setmetatable
+local insert = table.insert
 
 local RED = 1
 local BLACK = 0
@@ -15,7 +17,7 @@ local inorder_tree_walk
 function inorder_tree_walk (s, x, Tnil)
    if x ~= Tnil then
       inorder_tree_walk (s, x.left, Tnil)
-      tab_insert(s, x.key)
+      insert(s, x.key)
       inorder_tree_walk (s, x.right, Tnil)
    end
 end
