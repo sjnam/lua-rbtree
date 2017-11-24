@@ -1,4 +1,4 @@
-local rbtree = require "lib.rbtree"
+local rbtree = require "rbtree"
 
 local MAXN = 10000
 
@@ -93,4 +93,6 @@ end
 print("\nmerge")
 
 merge(tree1, tree2)
+
+print()
 
