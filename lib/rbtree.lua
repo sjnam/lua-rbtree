@@ -24,6 +24,7 @@ function inorder_tree_walk (x, Tnil)
    end
 end
 
+
 local function tree_minimum (x, Tnil)
    while x.left ~= Tnil do
       x = x.left

@@ -36,12 +36,23 @@ local tree = rbtree.new()
 
 local node
 local arr = permgen(n, MAXN)
+
+
 for _, v in ipairs(arr) do
    tree:insert(v)
 end
 
+print("OK insert")
+
+local s = {}
 for v in tree:walk() do
+   s[#s+1] = v
    io.write(v, " ")
 end
-io.write("\n")
+print("\n")
+
+for _, v in ipairs(s) do
+   print("OK delete", v)
+   tree:delete(v)
+end
 
