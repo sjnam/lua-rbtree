@@ -17,9 +17,9 @@ Create rbtree node object.
 
 walk
 --------
-`syntax: tab = rbt:walk()`
+`syntax: iterator = rbt:walk()`
 
-Visit all node in a rbtree by inorder tree walk and return array.
+Visit all node in a rbtree by inorder tree walk and return iterator.
 
 insert
 ----------
