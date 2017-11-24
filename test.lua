@@ -1,5 +1,8 @@
 local rbtree = require "lib.rbtree"
 
+local MAXN = 10000
+
+
 -- Floyd's random permutation generator
 local function permgen (m, n)
    local s, head = {}
@@ -25,23 +28,35 @@ local function permgen (m, n)
 end
 
 
-math.randomseed(os.time())
+function merge (t1, t2)
+   local walk1, walk2 = t1:walk(), t2:walk()
+   local v1, v2 = walk1(), walk2()
 
-local MAXN = 10000
+   while v1 or v2 do
+      if v1 and (not v2 or v1 < v2) then
+         io.write(v1, " "); v1 = walk1()
+      else
+         io.write(v2, " "); v2 = walk2()
+      end
+   end
+end
+
+
+function insert(tree, n)
+   local arr = permgen(n, MAXN)
+   for _, v in ipairs(arr) do
+      tree:insert(v)
+   end
+end
+
+
+math.randomseed(os.time())
 
 local n = tonumber(arg[1]) or 10
 if n > MAXN then n = MAXN end
 
 local tree = rbtree.new()
-
-local node
-local arr = permgen(n, MAXN)
-
-
-for _, v in ipairs(arr) do
-   tree:insert(v)
-end
-
+insert(tree, n)
 print("OK insert")
 
 local s = {}
@@ -55,4 +70,27 @@ for _, v in ipairs(s) do
    print("OK delete", v)
    tree:delete(v)
 end
+
+print()
+
+local tree1, tree2 = rbtree.new(), rbtree.new()
+
+insert(tree1, n)
+insert(tree2, n)
+
+print("tree1")
+for v in tree1:walk() do
+   s[#s+1] = v
+   io.write(v, " ")
+end
+
+print("\ntree2")
+for v in tree2:walk() do
+   s[#s+1] = v
+   io.write(v, " ")
+end
+
+print("\nmerge")
+
+merge(tree1, tree2)
 
