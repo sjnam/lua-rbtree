@@ -8,20 +8,21 @@
 local type = type
 local setmetatable = setmetatable
 local insert = table.insert
+local co_wrap = coroutine.wrap
+local co_yield = coroutine.yield
 
 local RED = 1
 local BLACK = 0
 
 
 local inorder_tree_walk
-function inorder_tree_walk (s, x, Tnil)
+function inorder_tree_walk (x, Tnil)
    if x ~= Tnil then
-      inorder_tree_walk (s, x.left, Tnil)
-      insert(s, x.key)
-      inorder_tree_walk (s, x.right, Tnil)
+      inorder_tree_walk (x.left, Tnil)
+      co_yield(x.key)
+      inorder_tree_walk (x.right, Tnil)
    end
 end
-
 
 local function tree_minimum (x, Tnil)
    while x.left ~= Tnil do
@@ -267,9 +268,9 @@ end
 
 
 function _M.walk (self)
-   local s = {}
-   inorder_tree_walk(s, self.root, self.sentinel)
-   return s
+   return co_wrap(function ()
+                     inorder_tree_walk(self.root, self.sentinel)
+                  end)
 end
 
 

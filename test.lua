@@ -1,4 +1,4 @@
-local rbtree = require "rbtree"
+local rbtree = require "lib.rbtree"
 
 -- Floyd's random permutation generator
 local function permgen (m, n)
@@ -27,23 +27,21 @@ end
 
 math.randomseed(os.time())
 
+local MAXN = 10000
 
-local N = 10000
+local n = tonumber(arg[1]) or 10
+if n > MAXN then n = MAXN end
 
 local tree = rbtree.new()
 
 local node
-local arr = permgen(N, 1000000)
+local arr = permgen(n, MAXN)
 for _, v in ipairs(arr) do
    tree:insert(v)
 end
 
-print("INSERT OK")
-
-local idx = permgen(N, N)
-for _, v in ipairs(idx) do
-   tree:delete(arr[v])
+for v in tree:walk() do
+   io.write(v, " ")
 end
-
-print("DELETE OK")
+io.write("\n")
 
