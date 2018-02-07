@@ -1,5 +1,5 @@
 --[[
-   Copyleft (Ↄ) Soojin Nam
+   Copyright (C) Soojin Nam
 
    The red-black tree code is based on the algorithm described in
    the "Introduction to Algorithms" by Cormen, Leiserson and Rivest.
