@@ -7,7 +7,6 @@
 
 local type = type
 local setmetatable = setmetatable
-local insert = table.insert
 local co_wrap = coroutine.wrap
 local co_yield = coroutine.yield
 
