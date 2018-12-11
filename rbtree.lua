@@ -267,6 +267,15 @@ function _M.tnode (self, key)
 end
 
 
+function _M.search(self, key)
+   local z = tree_search(self.root, key, self.sentinel)
+   if z == self.sentinel then
+      return nil
+   end
+   return z
+end
+
+
 function _M.walk (self)
    return co_wrap(function ()
                      inorder_tree_walk(self.root, self.sentinel)
@@ -285,7 +294,7 @@ end
 
 
 function _M.delete (self, key)
-   local z = tree_search (self.root, key, self.sentinel)
+   local z = tree_search(self.root, key, self.sentinel)
    if z ~= self.sentinel then
       rb_delete(self, z)
    end
