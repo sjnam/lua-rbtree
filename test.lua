@@ -29,14 +29,14 @@ end
 
 
 function merge (t1, t2)
-   local walk1, walk2 = t1:walk(), t2:walk()
-   local v1, v2 = walk1(), walk2()
+   local iter1, iter2 = t1:iter(), t2:iter()
+   local v1, v2 = iter1(), iter2()
 
    while v1 or v2 do
       if v1 and (not v2 or v1 < v2) then
-         io.write(v1, " "); v1 = walk1()
+         io.write(v1, " "); v1 = iter1()
       else
-         io.write(v2, " "); v2 = walk2()
+         io.write(v2, " "); v2 = iter2()
       end
    end
 end
@@ -60,7 +60,7 @@ insert(tree, n)
 print("OK insert")
 
 local s = {}
-for v in tree:walk() do
+for v in tree:iter() do
    s[#s+1] = v
    io.write(v, " ")
 end
@@ -79,13 +79,13 @@ insert(tree1, n)
 insert(tree2, n)
 
 print("tree1")
-for v in tree1:walk() do
+for v in tree1:iter() do
    s[#s+1] = v
    io.write(v, " ")
 end
 
 print("\ntree2")
-for v in tree2:walk() do
+for v in tree2:iter() do
    s[#s+1] = v
    io.write(v, " ")
 end

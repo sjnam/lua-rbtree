@@ -276,7 +276,7 @@ function _M.search(self, key)
 end
 
 
-function _M.walk (self)
+function _M.iter (self)
    return co_wrap(function ()
                      inorder_tree_walk(self.root, self.sentinel)
                   end)

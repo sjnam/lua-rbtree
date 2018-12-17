@@ -15,9 +15,9 @@ tnode
 
 Create rbtree node object.
 
-walk
+iter
 --------
-`syntax: iterator = rbt:walk()`
+`syntax: iterator = rbt:iter()`
 
 Visit all node in a rbtree by inorder tree walk and return iterator.
 
