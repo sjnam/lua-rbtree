@@ -1,6 +1,5 @@
 --[[
-   Copyright (C) Soojin Nam
-
+   Written by Soojin Nam. Public Domain.
    The red-black tree code is based on the algorithm described in
    the "Introduction to Algorithms" by Cormen, Leiserson and Rivest.
 --]]
@@ -9,6 +8,7 @@ local type = type
 local setmetatable = setmetatable
 local co_wrap = coroutine.wrap
 local co_yield = coroutine.yield
+
 
 local RED = 1
 local BLACK = 0
@@ -249,16 +249,15 @@ end
 
 -- rbtree module stuffs
 
-local _M = {}
-
-local mt = { __index = _M }
+local _M = {
+    version = '0.0.1'
+}
 
 
 function _M.new ()
    local sentinel = rbtree_node()
    sentinel.color = BLACK
-   
-   return setmetatable({ root = sentinel, sentinel = sentinel }, mt)
+   return setmetatable({ root = sentinel, sentinel = sentinel }, { __index = _M })
 end
 
 
@@ -288,7 +287,6 @@ function _M.insert (self, key)
    if type(key) == "number" then
       key = rbtree_node(key)
    end
-   
    rb_insert(self, key)
 end
 
@@ -302,4 +300,3 @@ end
 
 
 return _M
-
