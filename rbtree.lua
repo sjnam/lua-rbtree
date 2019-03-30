@@ -9,7 +9,6 @@ local setmetatable = setmetatable
 local co_wrap = coroutine.wrap
 local co_yield = coroutine.yield
 
-
 local RED = 1
 local BLACK = 0
 
@@ -250,28 +249,12 @@ end
 -- rbtree module stuffs
 
 local _M = {
-    version = '0.0.1'
+    version = '0.0.2'
 }
 
 
-function _M.new ()
-   local sentinel = rbtree_node()
-   sentinel.color = BLACK
-   return setmetatable({ root = sentinel, sentinel = sentinel }, { __index = _M })
-end
-
-
-function _M.tnode (self, key)
-   return rbtree_node(key)
-end
-
-
 function _M.search(self, key)
-   local z = tree_search(self.root, key, self.sentinel)
-   if z == self.sentinel then
-      return nil
-   end
-   return z
+   return tree_search(self.root, key, self.sentinel) ~= self.sentinel
 end
 
 
@@ -296,6 +279,19 @@ function _M.delete (self, key)
    if z ~= self.sentinel then
       rb_delete(self, z)
    end
+end
+
+
+local mt = {
+   __index = _M,
+   __call = _M.search
+}
+
+
+function _M.new ()
+   local sentinel = rbtree_node()
+   sentinel.color = BLACK
+   return setmetatable({ root = sentinel, sentinel = sentinel }, mt)
 end
 
 
